@@ -5,11 +5,11 @@
 ## Fork Details
 This fork will serve as a customized organelle genome assembly pipeline leveraging ONT and CCS reads.
 
-ONT reads are long enough to span long inverted repeats common in organelle genome assembly (chloroplast and mitochandria). But, even after consensus, ONT-based assemblies can be noisy.
+ONT reads are long enough to span long inverted repeats common in chloroplast and mitochondria genomes. But, even after consensus, ONT-based assemblies can be noisy.
 
 PacBio CCS (Hifi) reads are more accurate than ONT, but they are not long enough to span large inverted repeats.
 
-This fork will be used to first derive an ONT-based contiguous consensus using the normal Minipolish pipeline. Then, there will be additional round of CCS polishing to achieve high base accuracy, all while maintaining circularization and avoiding Racon truncation  
+This fork will be used to first derive an ONT-based contiguous consensus using the normal Minipolish pipeline. Then, there will be additional round of CCS polishing to achieve high base accuracy, all while maintaining circularization and avoiding Racon truncation.  
 
 
 ## Table of contents
