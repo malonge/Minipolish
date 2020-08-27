@@ -52,6 +52,8 @@ def get_arguments(args):
                               help='Skip the initial polishing round - appropriate if the input '
                                    'GFA does not have "a" lines (default: do the initial '
                                    'polishing round')
+    setting_args.add_argument('--hifi', type=str, default="",
+                              help='Hifi reads for the final rounds of polishing.')
 
     other_args = parser.add_argument_group('Other')
     other_args.add_argument('-h', '--help', action='help', default=argparse.SUPPRESS,
@@ -74,7 +76,9 @@ def main(args=None):
         if not args.skip_initial:
             initial_polish(graph, args.reads, args.threads, tmp_dir, args.pacbio)
         if args.rounds > 0:
-            full_polish(graph, args.reads, args.threads, args.rounds, tmp_dir, args.pacbio)
+            full_polish(graph, args.reads, args.threads, args.rounds, tmp_dir, args.pacbio, hifi=True)
+            if args.hifi:
+                full_polish(graph, args.hifi, args.threads, args.rounds, tmp_dir, args.pacbio)
         assign_depths(graph, args.reads, args.threads, tmp_dir, args.pacbio)
     # TODO (maybe): add a step here to recalculate the overlaps between segments
     graph.print_to_stdout()
@@ -103,7 +107,7 @@ def initial_polish(graph, read_filename, threads, tmp_dir, pacbio):
     log()
 
 
-def full_polish(graph, read_filename, threads, rounds, tmp_dir, pacbio):
+def full_polish(graph, read_filename, threads, rounds, tmp_dir, pacbio, hifi=False):
     section_header('Full polishing rounds')
     explanation('The assembly graph is now polished using all of the reads. Multiple rounds of '
                 'polishing are done, and circular contigs are rotated between rounds.')
@@ -113,7 +117,7 @@ def full_polish(graph, read_filename, threads, rounds, tmp_dir, pacbio):
         unpolished_filename = tmp_dir / (round_name + '.fasta')
         graph.save_to_fasta(unpolished_filename)
         fixed_seqs = run_racon(round_name, read_filename, unpolished_filename, threads, tmp_dir,
-                               pacbio)
+                               pacbio, hifi)
         graph.replace_sequences(fixed_seqs)
 
 
