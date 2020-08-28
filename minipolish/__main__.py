@@ -76,9 +76,9 @@ def main(args=None):
         if not args.skip_initial:
             initial_polish(graph, args.reads, args.threads, tmp_dir, args.pacbio)
         if args.rounds > 0:
-            full_polish(graph, args.reads, args.threads, args.rounds, tmp_dir, args.pacbio, hifi=True)
+            full_polish(graph, args.reads, args.threads, args.rounds, tmp_dir, args.pacbio)
             if args.hifi:
-                full_polish(graph, args.hifi, args.threads, args.rounds, tmp_dir, args.pacbio)
+                full_polish(graph, args.hifi, args.threads, args.rounds, tmp_dir, args.pacbio, hifi=True)
         assign_depths(graph, args.reads, args.threads, tmp_dir, args.pacbio)
     # TODO (maybe): add a step here to recalculate the overlaps between segments
     graph.print_to_stdout()
@@ -117,7 +117,7 @@ def full_polish(graph, read_filename, threads, rounds, tmp_dir, pacbio, hifi=Fal
         unpolished_filename = tmp_dir / (round_name + '.fasta')
         graph.save_to_fasta(unpolished_filename)
         fixed_seqs = run_racon(round_name, read_filename, unpolished_filename, threads, tmp_dir,
-                               pacbio, hifi)
+                               pacbio, hifi=hifi)
         graph.replace_sequences(fixed_seqs)
 
 
